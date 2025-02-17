@@ -2,6 +2,8 @@ import React from 'react'
 import './FoodItem.css'
 import { assets } from '../../assets/assets'
 const FoodItem = ({id,name,price,description,image}) => {
+
+    
   return (
     <div className='food-item'>
       <div className="food-item-img-container">
@@ -15,7 +17,7 @@ const FoodItem = ({id,name,price,description,image}) => {
         </div>
 
         <p className="food-item-desc">{description}</p>
-        <p className="food-item-price">${price}</p>
+        <p className="food-item-price">Rs. {price}</p>
       </div>
     </div>
   )
