@@ -9,25 +9,11 @@ import orderRouter from "./routes/orderRoute.js";
 
 //app config
 const app = express();
-const port = process.env.PORT || 3000;
-
-// CORS configuration
-const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? [
-          process.env.FRONTEND_URL || "https://your-frontend-url.vercel.app",
-          process.env.ADMIN_URL || "https://your-admin-url.vercel.app",
-        ]
-      : "http://localhost:5173",
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
+const port = 3000;
 
 //middleware
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(cors());
 
 // db connection
 connectDB();
@@ -43,12 +29,6 @@ app.get("/", (req, res) => {
   res.send("API working");
 });
 
-// For local development
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`server started on http://localhost:${port}`);
-  });
-}
-
-// Export for Vercel serverless function
-export default app;
+app.listen(port, () => {
+  console.log(`server started on http://localhost:${port}`);
+});
