@@ -9,11 +9,34 @@ import orderRouter from "./routes/orderRoute.js";
 
 //app config
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// CORS configuration
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.FRONTEND_URL || "http://localhost:5173",
+      process.env.ADMIN_URL || "http://localhost:5174",
+    ];
+
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin) return callback(null, true);
+
+    if (
+      allowedOrigins.indexOf(origin) !== -1 ||
+      process.env.NODE_ENV === "development"
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
 
 //middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 // db connection
 connectDB();
