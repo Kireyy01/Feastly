@@ -1,8 +1,11 @@
 {
-    "rewrites": [
+    "version": 2,
+    "routes": [
       {
-        "source": "/(.*)",
-        "destination": "/"
+        "src": "/(.*)",
+        "dest": "/index.html"
       }
-    ]
+    ],
+    "framework": "next"
   }
+  
