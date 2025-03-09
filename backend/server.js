@@ -6,10 +6,15 @@ import userRouter from "./routes/userRoute.js";
 import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
-//app config
+// Get the directory name for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Initialize the app
 const app = express();
-const port = process.env.PORT || 3000;
 
 // CORS configuration
 const corsOptions = {
@@ -34,24 +39,46 @@ const corsOptions = {
   credentials: true,
 };
 
-//middleware
+// Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
 
-// db connection
-connectDB();
+// Connect to database - wrapped in try/catch to prevent crashing
+try {
+  await connectDB();
+} catch (error) {
+  console.error("Database connection error:", error.message);
+  // Don't crash the server if DB connection fails
+}
 
-//api endpoints
+// API endpoints
 app.use("/api/food", foodRouter);
-app.use("/images", express.static("uploads"));
+app.use("/images", express.static(path.join(__dirname, "uploads")));
 app.use("/api/user", userRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
+// Root endpoint
 app.get("/", (req, res) => {
   res.send("API working");
 });
 
-app.listen(port, () => {
-  console.log(`server started on http://localhost:${port}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    message: "Something went wrong!",
+    error: process.env.NODE_ENV === "production" ? {} : err.message,
+  });
 });
+
+// Only start the server if we're not in a serverless environment
+if (process.env.NODE_ENV !== "production") {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server running in development mode on port ${port}`);
+  });
+}
+
+// Export the Express app for serverless environments
+export default app;
