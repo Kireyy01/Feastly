@@ -4,7 +4,11 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "author": "",
   "license": "ISC",
